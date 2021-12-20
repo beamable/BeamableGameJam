@@ -5,7 +5,7 @@ using UnityEngine;
 public class CommandsManager : MonoBehaviour
 {
 #pragma warning disable CS0649
-    [SerializeField] private MorseDecoder morseDecoder;
+    [SerializeField] private MorseDecoder _morseDecoder;
     [SerializeField] private List<string> _commands = new List<string>();
 #pragma warning restore CS0649
     
@@ -13,7 +13,7 @@ public class CommandsManager : MonoBehaviour
 
     public void IssueCommand()
     {
-        string currentCommand = morseDecoder.GetCurrentCommand().ToUpper();
+        string currentCommand = _morseDecoder.GetCurrentCommand().ToUpper();
         if (_commands.Contains(currentCommand))
         {
             if(_registeredActions.TryGetValue(currentCommand, out Action currentAction))
@@ -29,6 +29,8 @@ public class CommandsManager : MonoBehaviour
         {
             Debug.Log($"Command {currentCommand} doesn't exist");
         }
+        
+        _morseDecoder.Reset();
     }
 
     public void RegisterActionForCommand(string command, Action action)
