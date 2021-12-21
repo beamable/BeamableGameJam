@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using Beamable.Modules.Leaderboards;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -12,7 +10,7 @@ public class MainMenuManager : MonoBehaviour
     
     public void StartGame()
     {
-        
+        SceneManager.LoadScene("GameplayScene");
     }
 
     public void OpenManual()

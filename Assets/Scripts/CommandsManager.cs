@@ -14,6 +14,7 @@ public class CommandsManager : MonoBehaviour
     public void IssueCommand()
     {
         string currentCommand = _morseDecoder.GetCurrentCommand().ToUpper();
+        
         if (_commands.Contains(currentCommand))
         {
             if(_registeredActions.TryGetValue(currentCommand, out Action currentAction))
