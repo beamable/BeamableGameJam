@@ -17,7 +17,7 @@ public class TankController : MonoBehaviour
     [SerializeField] private Transform trackR_Pivot;
 
     [Header("Colliders")]
-    [SerializeField] private BoxCollider mainCollider;
+    [SerializeField] private CapsuleCollider mainCollider;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject missilePrefab;
@@ -28,9 +28,12 @@ public class TankController : MonoBehaviour
     [SerializeField] private float cannonRotateSpeed;
     [SerializeField] private float canonDelayShootTime;
     [SerializeField] private float cannonBulletsAmount;
+    [SerializeField] private float cannonRange;
 
     [SerializeField] private float tankBoostMultiplier;
     [SerializeField] private float tankBoostTime;
+
+    [SerializeField] private float movementAngleCheckValue;
 
     [Header("Tracks")]
     [SerializeField] private int tracksPoolSize;
@@ -45,7 +48,8 @@ public class TankController : MonoBehaviour
     float currentCannonHeading;
     float currentBoostTime = 0;
 
-    float cachedSpeed, cachedCannonRotSpeed;
+    float cachedSpeed, cachedAngularSpeed;
+    float cachedCannonRotSpeed;
 
     int usedBullets;
 
@@ -61,17 +65,23 @@ public class TankController : MonoBehaviour
         navMeshAgent.updateUpAxis = true;
 
         cachedSpeed = navMeshAgent.speed;
+        cachedAngularSpeed = navMeshAgent.angularSpeed;
+
         pivot.eulerAngles = new Vector3(90, 0, 0);
     }
 
     void Update()
     {
-        if (Vector3.Angle(transform.forward, navMeshAgent.velocity) > 10 || navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
+        if (Vector3.Angle(transform.forward, navMeshAgent.velocity) > movementAngleCheckValue || navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
+        {
             navMeshAgent.updatePosition = false;
+        }
         else
         {
             if (!navMeshAgent.updatePosition)
+            {
                 navMeshAgent.nextPosition = this.transform.position;
+            }
 
             navMeshAgent.updatePosition = true;
         }
@@ -110,7 +120,8 @@ public class TankController : MonoBehaviour
             cachedCannonRotSpeed * Time.deltaTime);
 
         float dot = Quaternion.Dot(cannonPivot.transform.rotation, lookRotation);
-        if (Mathf.Approximately(dot, 1) && currentShootDelay <= 0)
+        float dist = Vector3.Distance(target, cannonPivot.transform.position);
+        if (Mathf.Approximately(dot, 1) && currentShootDelay <= 0 && dist <= cannonRange)
             canShoot = true;
         else
             canShoot = false;
@@ -128,6 +139,7 @@ public class TankController : MonoBehaviour
         if (currentBoostTime < 0)
         {
             navMeshAgent.speed = cachedSpeed;
+            navMeshAgent.angularSpeed = cachedAngularSpeed;
             cachedCannonRotSpeed = cannonRotateSpeed;
         }
     }
@@ -153,7 +165,7 @@ public class TankController : MonoBehaviour
     {
         currentTrackTime += Time.deltaTime;
 
-        if (currentTrackTime > trackSpawnDelay && navMeshAgent.updatePosition)
+        if (currentTrackTime > trackSpawnDelay)
         {
             SpawnTrack(trackL_Pivot);
             SpawnTrack(trackR_Pivot);
@@ -185,6 +197,7 @@ public class TankController : MonoBehaviour
     {
         currentBoostTime = tankBoostTime;
         navMeshAgent.speed = cachedSpeed * tankBoostMultiplier;
+        navMeshAgent.angularSpeed = cachedAngularSpeed * tankBoostMultiplier;
         cachedCannonRotSpeed = cannonRotateSpeed * tankBoostMultiplier;
     }
 
