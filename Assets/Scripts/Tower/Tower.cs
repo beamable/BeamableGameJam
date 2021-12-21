@@ -1,10 +1,13 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 using Quaternion = UnityEngine.Quaternion;
 using Vector3 = UnityEngine.Vector3;
 
 public class Tower : MonoBehaviour
 {
     [SerializeField] private Transform barrelTransform;
+    [SerializeField] private Transform missileSpawnPoint;
+    [SerializeField] private GameObject missilePrefab;
     [SerializeField] private float rotationSpeed = 45;
     [SerializeField] private float fireCooldown = 2;
 
@@ -15,6 +18,9 @@ public class Tower : MonoBehaviour
     private void Awake()
     {
         _collider = GetComponent<CapsuleCollider>();
+        Assert.IsNotNull(barrelTransform);
+        Assert.IsNotNull(missileSpawnPoint);
+        Assert.IsNotNull(missilePrefab);
     }
 
     private void OnTriggerEnter(Collider other)
