@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -110,6 +111,19 @@ public class MorseDecoder : MonoBehaviour
         _pauseTimer = 0.0f;
 
         ParseSignTimer();
+    }
+
+    public string GetCodeForCommand(string command)
+    {
+        string code = string.Empty;
+
+        foreach(char c in command)
+        {
+            KeyValuePair<string,char> pair = _morseLetters.FirstOrDefault(x => x.Value == c);
+            code += $"{pair.Key}  ";
+        }
+
+        return code.Remove(code.Length - 2, 2);
     }
 
     private void ParseSignTimer()
