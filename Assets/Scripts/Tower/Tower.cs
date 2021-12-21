@@ -5,6 +5,8 @@ using Vector3 = UnityEngine.Vector3;
 
 public class Tower : MonoBehaviour
 {
+    private const float FireEffectFadeDelay = .3f;
+    
     [SerializeField] private Transform barrelTransform;
     [SerializeField] private Transform missileSpawnPoint;
     [SerializeField] private GameObject missilePrefab;
@@ -72,7 +74,7 @@ public class Tower : MonoBehaviour
         Instantiate(missilePrefab, missileSpawnPoint.position, missileSpawnPoint.rotation, null);
         var fireEffect = Instantiate(fireEffectPrefab, missileSpawnPoint.position, missileSpawnPoint.rotation,
             missileSpawnPoint);
-        Destroy(fireEffect, .15f);
+        Destroy(fireEffect, FireEffectFadeDelay);
         _cooldownTimer = fireCooldown;
     }
 
