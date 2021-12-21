@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
 public class MorseDecoder : MonoBehaviour
 {
 #pragma warning disable CS0649
-    [SerializeField] private MorseSoundGenerator _soundGenerator;
     [SerializeField] private TextMeshProUGUI _morsePhraseView;
     [SerializeField] private TextMeshProUGUI _translatedPhraseView;
 #pragma warning restore CS0649
@@ -58,7 +58,7 @@ public class MorseDecoder : MonoBehaviour
     private string _currentTranslatedPhrase;
 
     private CountMode _countMode;
-    
+
     private void Start()
     {
         Reset();
@@ -75,7 +75,7 @@ public class MorseDecoder : MonoBehaviour
 
         _currentMorsePhrase = String.Empty;
         _currentTranslatedPhrase = String.Empty;
-        
+
         _signTimer = 0.0f;
         _pauseTimer = 0.0f;
 
@@ -84,15 +84,6 @@ public class MorseDecoder : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            StartCounting();
-        }
-        else if (Input.GetKeyUp(KeyCode.Space))
-        {
-            StopCounting();
-        }
-
         switch (_countMode)
         {
             case CountMode.NONE:
@@ -106,22 +97,33 @@ public class MorseDecoder : MonoBehaviour
         }
     }
 
-    private void StartCounting()
+    public void StartCounting()
     {
         _countMode = CountMode.SIGN;
         _signTimer = 0.0f;
-        _soundGenerator.StartBeep();
 
         ParsePauseTimer();
     }
 
-    private void StopCounting()
+    public void StopCounting()
     {
         _countMode = CountMode.PAUSE;
         _pauseTimer = 0.0f;
-        _soundGenerator.StopBeep();
 
         ParseSignTimer();
+    }
+
+    public string GetCodeForCommand(string command)
+    {
+        string code = string.Empty;
+
+        foreach(char c in command)
+        {
+            KeyValuePair<string,char> pair = _morseLetters.FirstOrDefault(x => x.Value == c);
+            code += $"{pair.Key}  ";
+        }
+
+        return code.Remove(code.Length - 2, 2);
     }
 
     private void ParseSignTimer()
