@@ -198,8 +198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef7972069e344bdbbc3a1a46f6272596, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  morseDecoder: {fileID: 101245070}
-  _issueCommandButton: {fileID: 1665124305}
+  _morseDecoder: {fileID: 101245070}
   _commands:
   - SOS
 --- !u!4 &159352352
