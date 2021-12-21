@@ -153,7 +153,7 @@ public class TankController : MonoBehaviour
         currentShootDelay -= Time.deltaTime;
 
         currentCannonHeading = Mathf.MoveTowardsAngle(currentCannonHeading, DesiredHeadingToPlayer, cachedCannonRotSpeed * Time.deltaTime);
-        cannonPivot.transform.rotation = Quaternion.Euler(0, 0, currentCannonHeading + 90);
+        cannonPivot.transform.localRotation = Quaternion.Euler(0, 0, currentCannonHeading + 90);
 
         ShootIfPossible();
     }
