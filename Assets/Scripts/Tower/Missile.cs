@@ -8,6 +8,8 @@ public class Missile : MonoBehaviour
     [SerializeField] private float explosionTimer = 5;
     [SerializeField] private float movementSpeed = 5;
 
+    [SerializeField] public BoxCollider collider;
+
     private void Awake()
     {
         Assert.IsNotNull(explosionPrefab);

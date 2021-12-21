@@ -49,6 +49,7 @@ MonoBehaviour:
   explosionPrefab: {fileID: 5978367900899172011, guid: 877ef21955b5a1b49be1ae9991139df1, type: 3}
   explosionTimer: 5
   movementSpeed: 5
+  collider: {fileID: 2972506463467854777}
 --- !u!54 &7347187562747146496
 Rigidbody:
   m_ObjectHideFlags: 0

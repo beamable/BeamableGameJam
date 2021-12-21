@@ -6335,6 +6335,36 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2535652758423977954, guid: 0a15bdc0061fa61489091abcc6971fb9, type: 3}
   m_PrefabInstance: {fileID: 198958903}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &199916714
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 199916715}
+  m_Layer: 0
+  m_Name: TracksParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &199916715
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 199916714}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &200134032
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12653,10 +12683,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1702914833038212065, guid: ce222e9df10931d49a5535f6adfbf86c, type: 3}
-      propertyPath: m_Radius
-      value: 0.2
-      objectReference: {fileID: 0}
+    - target: {fileID: 4275723835191661240, guid: ce222e9df10931d49a5535f6adfbf86c, type: 3}
+      propertyPath: tracksParent
+      value: 
+      objectReference: {fileID: 199916715}
     - target: {fileID: 4275723835191661241, guid: ce222e9df10931d49a5535f6adfbf86c, type: 3}
       propertyPath: m_Name
       value: Tank
@@ -12704,18 +12734,6 @@ PrefabInstance:
     - target: {fileID: 4275723835191661243, guid: ce222e9df10931d49a5535f6adfbf86c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4275723835545960641, guid: ce222e9df10931d49a5535f6adfbf86c, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 4275723835545960641, guid: ce222e9df10931d49a5535f6adfbf86c, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 4275723835545960641, guid: ce222e9df10931d49a5535f6adfbf86c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -90
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ce222e9df10931d49a5535f6adfbf86c, type: 3}
@@ -13196,9 +13214,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 863337021}
+      - m_Target: {fileID: 863337025}
         m_TargetAssemblyTypeName: TankController, Assembly-CSharp
-        m_MethodName: 
+        m_MethodName: Reload
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -29047,9 +29065,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 863337021}
+      - m_Target: {fileID: 863337025}
         m_TargetAssemblyTypeName: TankController, Assembly-CSharp
-        m_MethodName: 
+        m_MethodName: Boost
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -43427,7 +43445,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1316560836
 PrefabInstance:
@@ -59699,7 +59717,7 @@ RectTransform:
   - {fileID: 211753879}
   - {fileID: 856640103}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -64694,6 +64712,36 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2535652758423977954, guid: 0a15bdc0061fa61489091abcc6971fb9, type: 3}
   m_PrefabInstance: {fileID: 1904863521}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1907650574
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1907650575}
+  m_Layer: 0
+  m_Name: BulletsParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1907650575
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1907650574}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1907708007
 PrefabInstance:
   m_ObjectHideFlags: 0

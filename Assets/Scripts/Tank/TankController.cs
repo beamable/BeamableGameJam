@@ -37,11 +37,9 @@ public class TankController : MonoBehaviour
     BoxCollider mainCollider;
 
     [Header("Prefabs")]
-    [SerializeField]
-    GameObject bulletPrefab;
-
-    [SerializeField]
-    GameObject trackPrefab;
+    [SerializeField] private GameObject missilePrefab;
+    [SerializeField] private GameObject fireEffectPrefab;
+    [SerializeField] private GameObject trackPrefab;
 
     [Header("Cannon")]
     [SerializeField]
@@ -59,16 +57,13 @@ public class TankController : MonoBehaviour
     [SerializeField]
     float cannonBulletsAmount;
 
+
     [Header("Tracks")]
     [SerializeField]
     int tracksPoolSize;
 
     [SerializeField]
     float trackSpawnDelay;
-
-    [Header("Parents")]
-    [SerializeField]
-    Transform bulletsParent;
 
     [SerializeField]
     Transform tracksParent;
@@ -85,12 +80,12 @@ public class TankController : MonoBehaviour
 
     int usedBullets;
 
-    List<TankBullet> bulletsPool;
+    List<GameObject> bulletsPool;
     List<GameObject> trackPool;
 
     void Start()
     {
-        bulletsPool = new List<TankBullet>();
+        bulletsPool = new List<GameObject>();
         trackPool = new List<GameObject>();
 
         navMeshAgent.updateRotation = true;
@@ -157,11 +152,21 @@ public class TankController : MonoBehaviour
         
         Vector3 delta = target - cannonPivot.transform.position;
         var lookRotation = Quaternion.LookRotation(delta);
+
         cannonPivot.transform.rotation = Quaternion.RotateTowards(cannonPivot.transform.rotation, lookRotation, 
             cachedCannonRotSpeed * Time.deltaTime);
 
+        float dot = Quaternion.Dot(cannonPivot.transform.rotation, lookRotation);
+        if (Mathf.Approximately(dot, 1) && currentShootDelay <= 0)
+            canShoot = true;
+        else
+            canShoot = false;
+
+        currentShootDelay -= Time.deltaTime;
+
         ShootIfPossible();
     }
+
 
     void UpdateBoost()
     {
@@ -180,28 +185,12 @@ public class TankController : MonoBehaviour
         {
             currentShootDelay = canonDelayShootTime;
 
-            GameObject bullet = Instantiate(bulletPrefab);
-            bullet.transform.position = bulletPivot.transform.position;
-            bullet.transform.localRotation = bulletPivot.transform.rotation;
+            GameObject missile = Instantiate(missilePrefab, bulletPivot.position, bulletPivot.rotation, null);
+            var fireEffect = Instantiate(fireEffectPrefab, bulletPivot.position, bulletPivot.rotation,
+                bulletPivot);
+            Destroy(fireEffect, .3f);
 
-            if (bulletsParent != null)
-                bullet.transform.parent = bulletsParent;
-
-            TankBullet tankBullet = bullet.GetComponent<TankBullet>();
-            tankBullet.Init(cannonRange);
-
-            // Physics.IgnoreCollision(mainCollider, tankBullet.collider);
-            bulletsPool.Add(tankBullet);
-
-            for (int i = 0; i < bulletsPool.Count; i++)
-            {
-                if (!bulletsPool[i].gameObject.activeSelf)
-                {
-                    DestroyImmediate(bulletsPool[i].gameObject);
-                    bulletsPool.RemoveAt(i);
-                    i--;
-                }
-            }
+             Physics.IgnoreCollision(mainCollider, missile.GetComponent<Missile>().collider);
 
             usedBullets++;
         }
