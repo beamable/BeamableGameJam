@@ -8,6 +8,7 @@ public class Tower : MonoBehaviour
     [SerializeField] private Transform barrelTransform;
     [SerializeField] private Transform missileSpawnPoint;
     [SerializeField] private GameObject missilePrefab;
+    [SerializeField] private GameObject fireEffectPrefab;
     [SerializeField] private float rotationSpeed = 45;
     [SerializeField] private float fireCooldown = 2;
 
@@ -21,6 +22,7 @@ public class Tower : MonoBehaviour
         Assert.IsNotNull(barrelTransform);
         Assert.IsNotNull(missileSpawnPoint);
         Assert.IsNotNull(missilePrefab);
+        Assert.IsNotNull(fireEffectPrefab);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -68,6 +70,9 @@ public class Tower : MonoBehaviour
     private void Shoot()
     {
         Instantiate(missilePrefab, missileSpawnPoint.position, missileSpawnPoint.rotation, null);
+        var fireEffect = Instantiate(fireEffectPrefab, missileSpawnPoint.position, missileSpawnPoint.rotation,
+            missileSpawnPoint);
+        Destroy(fireEffect, .15f);
         _cooldownTimer = fireCooldown;
     }
 
