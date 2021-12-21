@@ -164,7 +164,30 @@ public class MorseDecoder : MonoBehaviour
 
     private void Refresh()
     {
-        _morsePhraseView.text = _currentMorsePhrase;
+        _morsePhraseView.text = TranslateToCustomFont(_currentMorsePhrase);
         _translatedPhraseView.text = _currentTranslatedPhrase;
+    }
+
+    private string TranslateToCustomFont(string phrase)
+    {
+        string value = string.Empty;
+
+        foreach (char c in phrase)
+        {
+            if (c == '.')
+            {
+                value += "<sprite=\"Code\" index=0>";
+            }
+            else if (c == '-')
+            {
+                value += "<sprite=\"Code\" index=1>";
+            }
+            else if (c == ' ')
+            {
+                value += "  ";
+            }
+        }
+
+        return value;
     }
 }
