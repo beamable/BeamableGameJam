@@ -200,7 +200,7 @@ public class TankController : MonoBehaviour
     {
         currentTrackTime += Time.deltaTime;
 
-        if (currentTrackTime > trackSpawnDelay)
+        if (currentTrackTime > trackSpawnDelay && navMeshAgent.updatePosition)
         {
             SpawnTrack(trackL_Pivot);
             SpawnTrack(trackR_Pivot);
