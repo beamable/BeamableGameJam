@@ -8,23 +8,21 @@ using UnityEngine.UI;
 public class MainMenuManager : MonoBehaviour
 {
     [SerializeField] private LeaderboardsPresenter _leaderboardsPresenter;
+    [SerializeField] private ManualPresenter _manualPresenter;
     
-    void Start()
-    {
-    }
-
-    void Update()
-    {
-    }
-
     public void StartGame()
     {
         
     }
 
-    public void ShowInstructions()
+    public void OpenManual()
     {
-        
+        _manualPresenter.gameObject.SetActive(true);
+    }
+
+    public void CloseManual()
+    {
+        _manualPresenter.gameObject.SetActive(false);
     }
 
     public void OpenLeaderboards()
