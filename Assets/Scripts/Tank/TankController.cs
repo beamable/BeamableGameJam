@@ -34,7 +34,7 @@ public class TankController : MonoBehaviour
 
     [Header("Colliders")]
     [SerializeField]
-    CapsuleCollider2D mainCollider;
+    BoxCollider mainCollider;
 
     [Header("Prefabs")]
     [SerializeField]
@@ -139,21 +139,26 @@ public class TankController : MonoBehaviour
 
     void UpdateCannon()
     {
-        Vector3 delta = cannonPivot.transform.position - target;
-
-        float DesiredHeadingToPlayer = Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg;
-
-        float AngleError = Mathf.DeltaAngle(DesiredHeadingToPlayer, currentCannonHeading);
-
-        if (AngleError < cannonShootErrorAngle && currentShootDelay <= 0)
-            canShoot = true;
-        else
-            canShoot = false;
-
-        currentShootDelay -= Time.deltaTime;
-
-        currentCannonHeading = Mathf.MoveTowardsAngle(currentCannonHeading, DesiredHeadingToPlayer, cachedCannonRotSpeed * Time.deltaTime);
-        cannonPivot.transform.localRotation = Quaternion.Euler(0, 0, currentCannonHeading + 90);
+        // Vector3 delta = cannonPivot.transform.position - target;
+        
+        // float DesiredHeadingToPlayer = Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg;
+        //
+        // float AngleError = Mathf.DeltaAngle(DesiredHeadingToPlayer, currentCannonHeading);
+        //
+        // if (AngleError < cannonShootErrorAngle && currentShootDelay <= 0)
+        //     canShoot = true;
+        // else
+        //     canShoot = false;
+        //
+        // currentShootDelay -= Time.deltaTime;
+        //
+        // currentCannonHeading = Mathf.MoveTowardsAngle(currentCannonHeading, DesiredHeadingToPlayer, cachedCannonRotSpeed * Time.deltaTime);
+        // cannonPivot.transform.localRotation = Quaternion.Euler(0, 0, currentCannonHeading + 90);
+        
+        Vector3 delta = target - cannonPivot.transform.position;
+        var lookRotation = Quaternion.LookRotation(delta);
+        cannonPivot.transform.rotation = Quaternion.RotateTowards(cannonPivot.transform.rotation, lookRotation, 
+            cachedCannonRotSpeed * Time.deltaTime);
 
         ShootIfPossible();
     }
@@ -185,7 +190,7 @@ public class TankController : MonoBehaviour
             TankBullet tankBullet = bullet.GetComponent<TankBullet>();
             tankBullet.Init(cannonRange);
 
-            Physics2D.IgnoreCollision(mainCollider, tankBullet.collider);
+            // Physics.IgnoreCollision(mainCollider, tankBullet.collider);
             bulletsPool.Add(tankBullet);
 
             for (int i = 0; i < bulletsPool.Count; i++)
