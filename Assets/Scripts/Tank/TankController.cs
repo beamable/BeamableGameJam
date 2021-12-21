@@ -7,66 +7,35 @@ using UnityEngine.AI;
 public class TankController : MonoBehaviour
 {
     [Header("Basic")]
-    [SerializeField]
-    NavMeshAgent navMeshAgent;
-
-    [SerializeField]
-    float tankBoostMultiplier;
-
-    [SerializeField]
-    float tankBoostTime;
+    [SerializeField] private NavMeshAgent navMeshAgent;
 
     [Header("Pivots")]
-    [SerializeField]
-    Transform pivot;
-
-    [SerializeField]
-    Transform cannonPivot;
-
-    [SerializeField]
-    Transform bulletPivot;
-
-    [SerializeField]
-    Transform trackL_Pivot;
-
-    [SerializeField]
-    Transform trackR_Pivot;
+    [SerializeField] private Transform pivot;
+    [SerializeField] private Transform cannonPivot;
+    [SerializeField] private Transform bulletPivot;
+    [SerializeField] private Transform trackL_Pivot;
+    [SerializeField] private Transform trackR_Pivot;
 
     [Header("Colliders")]
-    [SerializeField]
-    BoxCollider mainCollider;
+    [SerializeField] private BoxCollider mainCollider;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject missilePrefab;
     [SerializeField] private GameObject fireEffectPrefab;
     [SerializeField] private GameObject trackPrefab;
 
-    [Header("Cannon")]
-    [SerializeField]
-    float cannonRotateSpeed;
+    [Header("Parameters")]
+    [SerializeField] private float cannonRotateSpeed;
+    [SerializeField] private float canonDelayShootTime;
+    [SerializeField] private float cannonBulletsAmount;
 
-    [SerializeField]
-    float canonDelayShootTime;
-
-    [SerializeField]
-    float cannonShootErrorAngle;
-
-    [SerializeField]
-    float cannonRange;
-
-    [SerializeField]
-    float cannonBulletsAmount;
-
+    [SerializeField] private float tankBoostMultiplier;
+    [SerializeField] private float tankBoostTime;
 
     [Header("Tracks")]
-    [SerializeField]
-    int tracksPoolSize;
-
-    [SerializeField]
-    float trackSpawnDelay;
-
-    [SerializeField]
-    Transform tracksParent;
+    [SerializeField] private int tracksPoolSize;
+    [SerializeField] private float trackSpawnDelay;
+    [SerializeField] private Transform tracksParent;
 
     Vector3 target = Vector3.zero;
     bool isWaiting = false;
@@ -75,8 +44,8 @@ public class TankController : MonoBehaviour
     float currentTrackTime = 0;
     float currentCannonHeading;
     float currentBoostTime = 0;
-    float cachedSpeed;
-    float cachedCannonRotSpeed;
+
+    float cachedSpeed, cachedCannonRotSpeed;
 
     int usedBullets;
 
@@ -134,22 +103,6 @@ public class TankController : MonoBehaviour
 
     void UpdateCannon()
     {
-        // Vector3 delta = cannonPivot.transform.position - target;
-        
-        // float DesiredHeadingToPlayer = Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg;
-        //
-        // float AngleError = Mathf.DeltaAngle(DesiredHeadingToPlayer, currentCannonHeading);
-        //
-        // if (AngleError < cannonShootErrorAngle && currentShootDelay <= 0)
-        //     canShoot = true;
-        // else
-        //     canShoot = false;
-        //
-        // currentShootDelay -= Time.deltaTime;
-        //
-        // currentCannonHeading = Mathf.MoveTowardsAngle(currentCannonHeading, DesiredHeadingToPlayer, cachedCannonRotSpeed * Time.deltaTime);
-        // cannonPivot.transform.localRotation = Quaternion.Euler(0, 0, currentCannonHeading + 90);
-        
         Vector3 delta = target - cannonPivot.transform.position;
         var lookRotation = Quaternion.LookRotation(delta);
 
