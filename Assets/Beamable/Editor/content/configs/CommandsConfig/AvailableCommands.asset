@@ -9,7 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6247d5345dc64f2a82f4f42e7d63e89, type: 3}
-  m_Name: BussConfiguration
+  m_Script: {fileID: 11500000, guid: 095f76c1fdbf2764c9f97e6dd35bf6f4, type: 3}
+  m_Name: AvailableCommands
   m_EditorClassIdentifier: 
-  globalStyleSheet: {fileID: 0}
+  _tags: []
+  AvailableCommands:
+  - SOS
+  - ATTACK
+  - PUSH
+  - LOAD
