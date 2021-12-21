@@ -13,7 +13,7 @@ public class Tower : MonoBehaviour
 
     private Transform _target;
     private CapsuleCollider _collider;
-    private float cooldownTimer;
+    private float _cooldownTimer;
 
     private void Awake()
     {
@@ -44,15 +44,15 @@ public class Tower : MonoBehaviour
         if (_target)
         {
             var dot = RotateTowardsTarget();
-            if (Mathf.Approximately(dot, 1) && cooldownTimer <= 0)
+            if (Mathf.Approximately(dot, 1) && _cooldownTimer <= 0)
             {
                 Shoot();
             }
         }
 
-        if (cooldownTimer > 0)
+        if (_cooldownTimer > 0)
         {
-            cooldownTimer -= Time.deltaTime;
+            _cooldownTimer -= Time.deltaTime;
         }
     }
 
@@ -67,7 +67,8 @@ public class Tower : MonoBehaviour
 
     private void Shoot()
     {
-        cooldownTimer = fireCooldown;
+        Instantiate(missilePrefab, missileSpawnPoint.position, missileSpawnPoint.rotation, null);
+        _cooldownTimer = fireCooldown;
     }
 
     private void OnDrawGizmos()
