@@ -286,7 +286,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9196329e4c1ad9a49aabdffd65c690c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _soundGenerator: {fileID: 436601767}
   _morsePhraseView: {fileID: 586987578}
   _translatedPhraseView: {fileID: 1686353040}
 --- !u!4 &101245071

@@ -81,6 +81,7 @@ public class TankController : MonoBehaviour
     float currentCannonHeading;
     float currentBoostTime = 0;
     float cachedSpeed;
+    float cachedCannonRotSpeed;
 
     int usedBullets;
 
@@ -91,15 +92,17 @@ public class TankController : MonoBehaviour
     {
         bulletsPool = new List<TankBullet>();
         trackPool = new List<GameObject>();
+
         navMeshAgent.updateRotation = true;
         navMeshAgent.updateUpAxis = true;
+
         cachedSpeed = navMeshAgent.speed;
         pivot.eulerAngles = new Vector3(90, 0, 0);
     }
 
     void Update()
     {
-        if (Vector3.Angle(transform.forward, navMeshAgent.desiredVelocity) > 10 || navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
+        if (Vector3.Angle(transform.forward, navMeshAgent.velocity) > 10 || navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
             navMeshAgent.updatePosition = false;
         else
         {
@@ -121,14 +124,17 @@ public class TankController : MonoBehaviour
 
     void CalcNewTarget()
     {
-        // TEMP
+        // TO DO GET NEXT TARGET
 
-        UnityEngine.Random.InitState(System.DateTime.Now.Millisecond);
-
-        float x = UnityEngine.Random.Range(-7, 7);
-        float y = UnityEngine.Random.Range(-3f, 3f);
-
-        target = new Vector3(x, y, 0);
+        Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * 10f;
+        randomDirection += transform.position;
+        NavMeshHit hit;
+        Vector3 finalPosition = Vector3.zero;
+        if (NavMesh.SamplePosition(randomDirection, out hit, 10f, 1))
+        {
+            finalPosition = hit.position;
+        }
+        target = finalPosition;
     }
 
     void UpdateCannon()
@@ -146,7 +152,7 @@ public class TankController : MonoBehaviour
 
         currentShootDelay -= Time.deltaTime;
 
-        currentCannonHeading = Mathf.MoveTowardsAngle(currentCannonHeading, DesiredHeadingToPlayer, cannonRotateSpeed * Time.deltaTime);
+        currentCannonHeading = Mathf.MoveTowardsAngle(currentCannonHeading, DesiredHeadingToPlayer, cachedCannonRotSpeed * Time.deltaTime);
         cannonPivot.transform.rotation = Quaternion.Euler(0, 0, currentCannonHeading + 90);
 
         ShootIfPossible();
@@ -159,6 +165,7 @@ public class TankController : MonoBehaviour
         if (currentBoostTime < 0)
         {
             navMeshAgent.speed = cachedSpeed;
+            cachedCannonRotSpeed = cannonRotateSpeed;
         }
     }
 
@@ -231,6 +238,7 @@ public class TankController : MonoBehaviour
     {
         currentBoostTime = tankBoostTime;
         navMeshAgent.speed = cachedSpeed * tankBoostMultiplier;
+        cachedCannonRotSpeed = cannonRotateSpeed * tankBoostMultiplier;
     }
 
     void SpawnTrack(Transform trackPivot)
