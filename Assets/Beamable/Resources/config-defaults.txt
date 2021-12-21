@@ -1,0 +1,8 @@
+{
+    "cid": "1438474881924096",
+    "alias": "beamable-team-3",
+    "pid": "DE_1438474881924097",
+    "platform": "https://api.beamable.com",
+    "socket": "https://api.beamable.com",
+    "containerPrefix": ""
+}
