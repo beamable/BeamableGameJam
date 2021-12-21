@@ -6,9 +6,17 @@ using UnityEngine.AI;
 
 public class TankController : MonoBehaviour
 {
+    [Header("Basic")]
     [SerializeField]
     NavMeshAgent navMeshAgent;
 
+    [SerializeField]
+    float tankBoostMultiplier;
+
+    [SerializeField]
+    float tankBoostTime;
+
+    [Header("Pivots")]
     [SerializeField]
     Transform pivot;
 
@@ -16,22 +24,82 @@ public class TankController : MonoBehaviour
     Transform cannonPivot;
 
     [SerializeField]
+    Transform bulletPivot;
+
+    [SerializeField]
+    Transform trackL_Pivot;
+
+    [SerializeField]
+    Transform trackR_Pivot;
+
+    [Header("Colliders")]
+    [SerializeField]
+    CapsuleCollider2D mainCollider;
+
+    [Header("Prefabs")]
+    [SerializeField]
+    GameObject bulletPrefab;
+
+    [SerializeField]
+    GameObject trackPrefab;
+
+    [Header("Cannon")]
+    [SerializeField]
     float cannonRotateSpeed;
 
-    Vector3 target;
+    [SerializeField]
+    float canonDelayShootTime;
+
+    [SerializeField]
+    float cannonShootErrorAngle;
+
+    [SerializeField]
+    float cannonRange;
+
+    [SerializeField]
+    float cannonBulletsAmount;
+
+    [Header("Tracks")]
+    [SerializeField]
+    int tracksPoolSize;
+
+    [SerializeField]
+    float trackSpawnDelay;
+
+    [Header("Parents")]
+    [SerializeField]
+    Transform bulletsParent;
+
+    [SerializeField]
+    Transform tracksParent;
+
+    Vector3 target = Vector3.zero;
     bool isWaiting = false;
+    bool canShoot = false;
+    float currentShootDelay = 0;
+    float currentTrackTime = 0;
     float currentCannonHeading;
+    float currentBoostTime = 0;
+    float cachedSpeed;
+
+    int usedBullets;
+
+    List<TankBullet> bulletsPool;
+    List<GameObject> trackPool;
 
     void Start()
     {
+        bulletsPool = new List<TankBullet>();
+        trackPool = new List<GameObject>();
         navMeshAgent.updateRotation = true;
         navMeshAgent.updateUpAxis = true;
+        cachedSpeed = navMeshAgent.speed;
         pivot.eulerAngles = new Vector3(90, 0, 0);
     }
 
-    private void Update()
+    void Update()
     {
-        if (Vector3.Angle(transform.forward, navMeshAgent.desiredVelocity) > 10)
+        if (Vector3.Angle(transform.forward, navMeshAgent.desiredVelocity) > 10 || navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
             navMeshAgent.updatePosition = false;
         else
         {
@@ -41,18 +109,20 @@ public class TankController : MonoBehaviour
             navMeshAgent.updatePosition = true;
         }
 
-        navMeshAgent.SetDestination(target);
-
-        if (navMeshAgent.remainingDistance < 0.1f && !isWaiting)
+        if (target != Vector3.zero)
         {
-            CalcNewTarget();
-        }
+            navMeshAgent.SetDestination(target);
 
-        UpdateCanonRotation();
+            UpdateCannon();
+            UpdateTracks();
+            UpdateBoost();
+        }
     }
 
-    private void CalcNewTarget()
+    void CalcNewTarget()
     {
+        // TEMP
+
         UnityEngine.Random.InitState(System.DateTime.Now.Millisecond);
 
         float x = UnityEngine.Random.Range(-7, 7);
@@ -61,7 +131,7 @@ public class TankController : MonoBehaviour
         target = new Vector3(x, y, 0);
     }
 
-    private void UpdateCanonRotation()
+    void UpdateCannon()
     {
         Vector3 delta = cannonPivot.transform.position - target;
 
@@ -69,8 +139,123 @@ public class TankController : MonoBehaviour
 
         float AngleError = Mathf.DeltaAngle(DesiredHeadingToPlayer, currentCannonHeading);
 
+        if (AngleError < cannonShootErrorAngle && currentShootDelay <= 0)
+            canShoot = true;
+        else
+            canShoot = false;
+
+        currentShootDelay -= Time.deltaTime;
+
         currentCannonHeading = Mathf.MoveTowardsAngle(currentCannonHeading, DesiredHeadingToPlayer, cannonRotateSpeed * Time.deltaTime);
         cannonPivot.transform.rotation = Quaternion.Euler(0, 0, currentCannonHeading + 90);
+
+        ShootIfPossible();
+    }
+
+    void UpdateBoost()
+    {
+        currentBoostTime -= Time.deltaTime;
+
+        if (currentBoostTime < 0)
+        {
+            navMeshAgent.speed = cachedSpeed;
+        }
+    }
+
+    void ShootIfPossible()
+    {
+        if (canShoot && usedBullets < cannonBulletsAmount)
+        {
+            currentShootDelay = canonDelayShootTime;
+
+            GameObject bullet = Instantiate(bulletPrefab);
+            bullet.transform.position = bulletPivot.transform.position;
+            bullet.transform.localRotation = bulletPivot.transform.rotation;
+
+            if (bulletsParent != null)
+                bullet.transform.parent = bulletsParent;
+
+            TankBullet tankBullet = bullet.GetComponent<TankBullet>();
+            tankBullet.Init(cannonRange);
+
+            Physics2D.IgnoreCollision(mainCollider, tankBullet.collider);
+            bulletsPool.Add(tankBullet);
+
+            for (int i = 0; i < bulletsPool.Count; i++)
+            {
+                if (!bulletsPool[i].gameObject.activeSelf)
+                {
+                    DestroyImmediate(bulletsPool[i].gameObject);
+                    bulletsPool.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            usedBullets++;
+        }
+    }
+
+    void UpdateTracks()
+    {
+        currentTrackTime += Time.deltaTime;
+
+        if (currentTrackTime > trackSpawnDelay)
+        {
+            SpawnTrack(trackL_Pivot);
+            SpawnTrack(trackR_Pivot);
+
+            if (trackPool.Count > tracksPoolSize)
+            {
+                for (int i = 0; i < 2 && i < trackPool.Count; i++)
+                {
+                    DestroyImmediate(trackPool[0].gameObject);
+                    trackPool.RemoveAt(0);
+                }
+            }
+
+            currentTrackTime = 0;
+        }
+    }
+
+    public void Reload()
+    {
+        usedBullets = 0;
+    }
+
+    public void Attack()
+    {
+        CalcNewTarget();
+    }
+
+    public void Boost()
+    {
+        currentBoostTime = tankBoostTime;
+        navMeshAgent.speed = cachedSpeed * tankBoostMultiplier;
+    }
+
+    void SpawnTrack(Transform trackPivot)
+    {
+        GameObject track = Instantiate(trackPrefab);
+        track.transform.position = trackPivot.position;
+        track.transform.localRotation = trackPivot.rotation;
+
+        if (tracksParent != null)
+            track.transform.parent = tracksParent;
+
+        trackPool.Add(track);
+    }
+
+    private void OnDestroy()
+    {
+        for (int i = 0; i < bulletsPool.Count; i++)
+            Destroy(bulletsPool[i].gameObject);
+
+        for (int i = 0; i < trackPool.Count; i++)
+            Destroy(trackPool[i].gameObject);
+
+        bulletsPool.Clear();
+        trackPool.Clear();
+
     }
 
 #if UNITY_EDITOR
