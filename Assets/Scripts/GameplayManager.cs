@@ -1,7 +1,11 @@
-﻿using System.Globalization;
+﻿using System.Collections.Generic;
+using Beamable;
+using Beamable.Common.Leaderboards;
+using Beamable.Stats;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameplayManager : MonoBehaviour
 {
@@ -11,9 +15,12 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _timer;
     [SerializeField] private GameObject _mask;
     [SerializeField] private GameObject _startButton;
-    [SerializeField] private GameObject _continueButton;
+    [SerializeField] private Button _continueButton;
     [SerializeField] private TextMeshProUGUI _summaryText;
     [SerializeField] private TextMeshProUGUI _summaryTimer;
+    [SerializeField] private LeaderboardRef _leaderboardRef;
+    [SerializeField] private StatObject _aliasStatObject;
+    [SerializeField] private TMP_InputField _nameField;
     
     private bool _isRunning;
     private float _missionTime;
@@ -31,8 +38,22 @@ public class GameplayManager : MonoBehaviour
         _summaryText.gameObject.SetActive(false);
         _summaryTimer.gameObject.SetActive(false);
         _continueButton.gameObject.SetActive(false);
+        _nameField.gameObject.SetActive(false);
         
         SetTimer(0);
+
+        _nameField.onValueChanged.AddListener(OnNameChanged);
+    }
+
+    private void OnDestroy()
+    {
+        _tankController.OnAmmoUpdated = null;
+        _nameField.onValueChanged.RemoveListener(OnNameChanged);
+    }
+
+    private void OnNameChanged(string value)
+    {
+        _continueButton.interactable = value.Length >= 3;
     }
 
     private void Update()
@@ -40,6 +61,12 @@ public class GameplayManager : MonoBehaviour
         if (!_isRunning) return;
         _missionTime += Time.deltaTime;
         SetTimer(_missionTime);
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            _retreated = false;
+            StopMission();
+        }
     }
 
     public void StartMission()
@@ -49,6 +76,7 @@ public class GameplayManager : MonoBehaviour
         _summaryText.gameObject.SetActive(false);
         _summaryTimer.gameObject.SetActive(false);
         _continueButton.gameObject.SetActive(false);
+        _nameField.gameObject.SetActive(false);
         
         _isRunning = true;
     }
@@ -59,11 +87,15 @@ public class GameplayManager : MonoBehaviour
         StopMission();
     }
 
-    public void Continue()
+    public async void Continue()
     {
         if (!_retreated)
         {
-            // TODO: add score to leaderboard
+            IBeamableAPI api = await Beamable.API.Instance;
+
+            Dictionary<string, object> stats = new Dictionary<string, object>();
+            stats.Add(_aliasStatObject.StatKey, _nameField.text);
+            await api.LeaderboardService.SetScore(_leaderboardRef, 1, stats);
         }
 
         SceneManager.LoadScene("MainMenuScene");
@@ -76,8 +108,10 @@ public class GameplayManager : MonoBehaviour
         _summaryText.gameObject.SetActive(true);
         _summaryTimer.gameObject.SetActive(true);
         _continueButton.gameObject.SetActive(true);
+        _continueButton.interactable = false;
+        _nameField.gameObject.SetActive(!_retreated);
         
-        _summaryTimer.text = $"YOUR TIME: {_missionTime.ToString(CultureInfo.InvariantCulture)}";        
+        _summaryTimer.text = $"YOUR TIME: {_missionTime:F1} S";        
         _isRunning = false;
     }
 

@@ -325,6 +325,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startHitPoints: 150
+  HintBar: {fileID: 0}
   navMeshAgent: {fileID: 1702914833038212065}
   pivot: {fileID: 3760708667565693938}
   cannonPivot: {fileID: 4275723835545960641}
