@@ -44,6 +44,10 @@ public class TankController : InteractiveEntity
     [SerializeField] private float trackSpawnDelay;
     [SerializeField] private Transform tracksParent;
 
+    [Space]
+    [SerializeField] private AudioClip shotSfx;
+    [SerializeField] private AudioClip explosionSfx;
+
     Vector3 movementTarget = Vector3.zero;
     Vector3 enemyTarget = Vector3.zero;
 
@@ -188,6 +192,8 @@ public class TankController : InteractiveEntity
     {
         if (canShoot && usedBullets < cannonBulletsAmount)
         {
+            AudioManager.Instance.PlayClip(shotSfx, transform.position);
+            
             currentShootDelay = canonDelayShootTime;
 
             GameObject missile = Instantiate(missilePrefab, bulletPivot.position, bulletPivot.rotation, null);
@@ -270,6 +276,7 @@ public class TankController : InteractiveEntity
 
     protected override void Destruct()
     {
+        AudioManager.Instance.PlayClip(explosionSfx, transform.position, .5f);
         Destroy(gameObject);
         var explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity, null);
         Destroy(explosion, 1);

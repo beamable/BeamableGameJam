@@ -43,7 +43,7 @@ public class Missile : MonoBehaviour
 
     private void Explode()
     {
-        AudioManager.Instance.PlayClip(explosionSfx, transform.position);
+        AudioManager.Instance.PlayClip(explosionSfx, transform.position, .4f);
         var explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity, null);
         Destroy(explosion, 1);
         Destroy(gameObject);

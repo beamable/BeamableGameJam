@@ -19,9 +19,10 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlayClip(AudioClip clip, Vector3 position)
+    public void PlayClip(AudioClip clip, Vector3 position, float volume = 1)
     {
         var source = Instantiate(audioSourcePrefab, position, Quaternion.identity, transform);
+        source.volume = volume;
         source.PlayOneShot(clip);
         StartCoroutine(DestroyAudioSourceWhenFinished(source));
     }
