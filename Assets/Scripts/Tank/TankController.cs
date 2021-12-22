@@ -139,12 +139,6 @@ public class TankController : InteractiveEntity
 
     void CalcNewTarget()
     {
-        if (Tower.AllTowers.Count > 0)
-        {
-            Tower.AllTowers.First();
-
-        }
-
         Tower nearest = Tower.AllTowers.FirstOrDefault(s => s != null);
 
         if (nearest != null)
