@@ -7,8 +7,7 @@ public class Missile : MonoBehaviour
     [SerializeField] private GameObject explosionPrefab;
     [SerializeField] private float explosionTimer = 5;
     [SerializeField] private float movementSpeed = 5;
-
-    [SerializeField] public BoxCollider collider;
+    [SerializeField] private float damage = 15;
 
     private void Awake()
     {
@@ -30,11 +29,12 @@ public class Missile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(TagsHelper.TankTag))
+        var entity = other.GetComponent<InteractiveEntity>();
+        
+        if (entity)
         {
             Explode();
-            // deal damage
-            
+            entity.TakeDamage(damage);
         }
     }
 

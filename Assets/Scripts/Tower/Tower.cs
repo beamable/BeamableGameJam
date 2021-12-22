@@ -5,16 +5,20 @@ using UnityEngine.Assertions;
 using Quaternion = UnityEngine.Quaternion;
 using Vector3 = UnityEngine.Vector3;
 
-public class Tower : MonoBehaviour
+public class Tower : InteractiveEntity
 {
     public static List<Tower> AllTowers { get; } = new List<Tower>();
     
     private const float FireEffectFadeDelay = .3f;
     
+    [Header("References")]
     [SerializeField] private Transform barrelTransform;
     [SerializeField] private Transform missileSpawnPoint;
     [SerializeField] private GameObject missilePrefab;
     [SerializeField] private GameObject fireEffectPrefab;
+    [SerializeField] private GameObject explosionPrefab;
+    
+    [Header("Properties")]
     [SerializeField] private float rotationSpeed = 45;
     [SerializeField] private float fireCooldown = 2;
 
@@ -22,8 +26,10 @@ public class Tower : MonoBehaviour
     private CapsuleCollider _collider;
     private float _cooldownTimer;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+        
         AllTowers.Add(this);
         StartCoroutine(SortTowersAfterInit());
         
@@ -32,6 +38,7 @@ public class Tower : MonoBehaviour
         Assert.IsNotNull(missileSpawnPoint);
         Assert.IsNotNull(missilePrefab);
         Assert.IsNotNull(fireEffectPrefab);
+        Assert.IsNotNull(explosionPrefab);
     }
 
     private IEnumerator SortTowersAfterInit()
@@ -93,6 +100,20 @@ public class Tower : MonoBehaviour
         _cooldownTimer = fireCooldown;
     }
 
+    protected override void Destruct()
+    {
+        Destroy(barrelTransform.gameObject);
+        AllTowers.Remove(this);
+        var explosion = Instantiate(explosionPrefab, barrelTransform.position, Quaternion.identity, null);
+        Destroy(explosion, 1);
+        enabled = false;
+    }
+
+    public void TargetAcquired(Transform target)
+    {
+        _target = target;
+    }
+    
     private void OnDrawGizmos()
     {
         if (_collider)
