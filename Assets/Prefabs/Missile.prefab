@@ -51,6 +51,7 @@ MonoBehaviour:
   explosionTimer: 5
   movementSpeed: 5
   damage: 15
+  explosionSfx: {fileID: 8300000, guid: 06798dccc699c6f4b8758698531311ff, type: 3}
 --- !u!54 &7347187562747146496
 Rigidbody:
   m_ObjectHideFlags: 0
