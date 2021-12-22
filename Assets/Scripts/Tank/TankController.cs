@@ -56,6 +56,7 @@ public class TankController : InteractiveEntity
 
     float cachedSpeed, cachedAngularSpeed;
     float cachedCannonRotSpeed;
+    Tower cachedAttackedTower;
 
     int usedBullets;
 
@@ -81,6 +82,8 @@ public class TankController : InteractiveEntity
     {
         bulletsPool = new List<GameObject>();
         trackPool = new List<GameObject>();
+
+        cachedAttackedTower = null;
 
         navMeshAgent.updateRotation = true;
         navMeshAgent.updateUpAxis = true;
@@ -131,6 +134,7 @@ public class TankController : InteractiveEntity
 
         if (nearest != null)
         {
+            cachedAttackedTower = nearest;
             Vector3 randomNearestPos = nearest.transform.position + UnityEngine.Random.insideUnitSphere * 1f;
             NavMeshHit hit;
             Vector3 finalPosition = Vector3.zero;
@@ -156,10 +160,11 @@ public class TankController : InteractiveEntity
 
         float dot = Quaternion.Dot(cannonPivot.transform.rotation, lookRotation);
         float dist = Vector3.Distance(enemyTarget, cannonPivot.transform.position);
-        if (Mathf.Approximately(dot, 1) && currentShootDelay <= 0 && dist <= cannonRange)
+        if (Mathf.Approximately(dot, 1) && currentShootDelay <= 0 && dist <= cannonRange && (cachedAttackedTower!= null && cachedAttackedTower.enabled))
             canShoot = true;
         else
             canShoot = false;
+
 
         currentShootDelay -= Time.deltaTime;
 
@@ -276,6 +281,9 @@ public class TankController : InteractiveEntity
     {
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(movementTarget, 0.1f);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawSphere(enemyTarget, 0.1f);
     }
 
 #endif
