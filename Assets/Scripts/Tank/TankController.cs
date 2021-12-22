@@ -4,6 +4,8 @@ using UnityEngine.AI;
 
 public class TankController : MonoBehaviour
 {
+    public static TankController Instance { get; private set; }
+    
     [Header("Basic")]
     [SerializeField] private NavMeshAgent navMeshAgent;
 
@@ -53,6 +55,18 @@ public class TankController : MonoBehaviour
 
     List<GameObject> bulletsPool;
     List<GameObject> trackPool;
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
 
     void Start()
     {

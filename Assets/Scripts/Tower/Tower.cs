@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -24,6 +25,7 @@ public class Tower : MonoBehaviour
     private void Awake()
     {
         AllTowers.Add(this);
+        StartCoroutine(SortTowersAfterInit());
         
         _collider = GetComponent<CapsuleCollider>();
         Assert.IsNotNull(barrelTransform);
@@ -31,6 +33,14 @@ public class Tower : MonoBehaviour
         Assert.IsNotNull(missilePrefab);
         Assert.IsNotNull(fireEffectPrefab);
     }
+
+    private IEnumerator SortTowersAfterInit()
+    {
+        yield return new WaitUntil(() => TankController.Instance != null);
+        AllTowers.Sort((t1, t2) => t1.DistanceToTank() < t2.DistanceToTank() ? -1 : 1);
+    }
+
+    private float DistanceToTank() => Vector3.Distance(TankController.Instance.transform.position, transform.position);
 
     private void OnTriggerEnter(Collider other)
     {
