@@ -84,7 +84,7 @@ public class GameplayManager : MonoBehaviour
         _missionTime += Time.deltaTime;
         SetTimer(_missionTime);
 
-        if (_destroyedTowers != 3) return;
+        if (Tower.AllTowers.Count > 0) return;
         _retreated = false;
         StopMission();
     }
