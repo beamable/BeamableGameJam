@@ -25,15 +25,22 @@ public class GameplayManager : MonoBehaviour
     private bool _isRunning;
     private float _missionTime;
     private bool _retreated;
+    private int _destroyedTowers;
 
     private void Start()
     {
         _commandsManager.RegisterActionForCommand("A", _tankController.Attack);
         _commandsManager.RegisterActionForCommand("L", _tankController.Reload);
         _commandsManager.RegisterActionForCommand("P", _tankController.Boost);
-        _commandsManager.RegisterActionForCommand("SOS", ()=>{ });
+        _commandsManager.RegisterActionForCommand("S", _tankController.Heal);
+        
+        _commandsManager.RegisterActionForCommand("ATTACK", _tankController.Attack);
+        _commandsManager.RegisterActionForCommand("LOAD", _tankController.Reload);
+        _commandsManager.RegisterActionForCommand("PUSH", _tankController.Boost);
+        _commandsManager.RegisterActionForCommand("SOS", _tankController.Heal);
 
         _tankController.OnAmmoUpdated = OnAmmoUpdated;
+        _tankController.OnDefeat = OnDefeat;
         
         _summaryText.gameObject.SetActive(false);
         _summaryTimer.gameObject.SetActive(false);
@@ -43,12 +50,27 @@ public class GameplayManager : MonoBehaviour
         SetTimer(0);
 
         _nameField.onValueChanged.AddListener(OnNameChanged);
+
+        Tower.OnTowerDestroyed += OnTowerDestroyed;
+    }
+
+    private void OnDefeat()
+    {
+        _retreated = false;
+        StopMission();
+    }
+
+    private void OnTowerDestroyed()
+    {
+        _destroyedTowers++;
     }
 
     private void OnDestroy()
     {
         _tankController.OnAmmoUpdated = null;
+        _tankController.OnDefeat = null;
         _nameField.onValueChanged.RemoveListener(OnNameChanged);
+        Tower.OnTowerDestroyed -= OnTowerDestroyed;
     }
 
     private void OnNameChanged(string value)
@@ -62,11 +84,9 @@ public class GameplayManager : MonoBehaviour
         _missionTime += Time.deltaTime;
         SetTimer(_missionTime);
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            _retreated = false;
-            StopMission();
-        }
+        if (_destroyedTowers != 3) return;
+        _retreated = false;
+        StopMission();
     }
 
     public void StartMission()
@@ -95,7 +115,10 @@ public class GameplayManager : MonoBehaviour
 
             Dictionary<string, object> stats = new Dictionary<string, object>();
             stats.Add(_aliasStatObject.StatKey, _nameField.text);
-            await api.LeaderboardService.SetScore(_leaderboardRef, 1, stats);
+
+            int score = (int)(_destroyedTowers * 10 / _missionTime * 100);
+
+            await api.LeaderboardService.SetScore(_leaderboardRef, score, stats);
         }
 
         SceneManager.LoadScene("MainMenuScene");
@@ -108,7 +131,7 @@ public class GameplayManager : MonoBehaviour
         _summaryText.gameObject.SetActive(true);
         _summaryTimer.gameObject.SetActive(true);
         _continueButton.gameObject.SetActive(true);
-        _continueButton.interactable = false;
+        _continueButton.interactable = _retreated;
         _nameField.gameObject.SetActive(!_retreated);
         
         _summaryTimer.text = $"YOUR TIME: {_missionTime:F1} S";        

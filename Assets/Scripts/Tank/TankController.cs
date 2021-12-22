@@ -9,6 +9,7 @@ public class TankController : InteractiveEntity
 {
     public static TankController Instance { get; private set; }
     public Action<float> OnAmmoUpdated;
+    public Action OnDefeat;
     
     [Header("Basic")]
     [SerializeField] private NavMeshAgent navMeshAgent;
@@ -139,13 +140,7 @@ public class TankController : InteractiveEntity
 
     void CalcNewTarget()
     {
-        if (Tower.AllTowers.Count > 0)
-        {
-            Tower.AllTowers.First();
-
-        }
-
-        Tower nearest = Tower.AllTowers.First();
+        Tower nearest = Tower.AllTowers.FirstOrDefault(s => s != null);
 
         if (nearest != null)
         {
@@ -297,11 +292,11 @@ public class TankController : InteractiveEntity
 
         bulletsPool.Clear();
         trackPool.Clear();
-
     }
 
     protected override void Destruct()
     {
+        OnDefeat?.Invoke();
         AudioManager.Instance.PlayClip(explosionSfx, transform.position, .5f);
         Destroy(gameObject);
         var explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity, null);
@@ -320,4 +315,9 @@ public class TankController : InteractiveEntity
     }
 
 #endif
+    public void Heal()
+    {
+        HitPoints = startHitPoints;
+        Refresh();
+    }
 }

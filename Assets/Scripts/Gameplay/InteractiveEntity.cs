@@ -1,12 +1,10 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class InteractiveEntity : MonoBehaviour
 {
-    public float HitPoints { get; private set; }
+    public float HitPoints { get; set; }
 
-    [SerializeField] private float startHitPoints = 100;
+    [SerializeField] protected float startHitPoints = 100;
 
     [Header("UI References")]
     [SerializeField] private GameObject WorldHintBar;
@@ -33,7 +31,7 @@ public class InteractiveEntity : MonoBehaviour
         }
     }
 
-    private void Refresh()
+    protected void Refresh()
     {
         if (cachedHintBar != null)
             cachedHintBar.transform.localScale = new Vector3(Mathf.Clamp(HitPoints, 0, float.MaxValue) / startHitPoints, 1f, 1f);
