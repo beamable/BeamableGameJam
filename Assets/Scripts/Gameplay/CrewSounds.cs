@@ -14,15 +14,19 @@ public class CrewSounds : MonoBehaviour
     {
         switch (command)
         {
+            case "ATTACK":
             case "A":
                 _audioSource.clip = _attack;
                 break;
+            case "PUSH":
             case "P":
                 _audioSource.clip = _push;
                 break;
+            case "LOAD":
             case "L":
                 _audioSource.clip = _load;
                 break;
+            case "NEGATIVE":
             case "N":
                 _audioSource.clip = _negative;
                 break;
