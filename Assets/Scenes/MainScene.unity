@@ -12384,6 +12384,10 @@ PrefabInstance:
       propertyPath: tracksParent
       value: 
       objectReference: {fileID: 199916715}
+    - target: {fileID: 4275723835191661240, guid: ce222e9df10931d49a5535f6adfbf86c, type: 3}
+      propertyPath: startHitPoints
+      value: 150
+      objectReference: {fileID: 0}
     - target: {fileID: 4275723835191661241, guid: ce222e9df10931d49a5535f6adfbf86c, type: 3}
       propertyPath: m_Name
       value: Tank

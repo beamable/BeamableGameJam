@@ -46,10 +46,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1ac80c9c045772438d4a8ed546245d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 2972506463467854777}
   explosionPrefab: {fileID: 5978367900899172011, guid: 877ef21955b5a1b49be1ae9991139df1, type: 3}
   explosionTimer: 5
   movementSpeed: 5
-  collider: {fileID: 2972506463467854777}
+  damage: 15
 --- !u!54 &7347187562747146496
 Rigidbody:
   m_ObjectHideFlags: 0
