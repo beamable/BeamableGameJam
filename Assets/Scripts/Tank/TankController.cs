@@ -145,7 +145,7 @@ public class TankController : InteractiveEntity
 
         }
 
-        Tower nearest = Tower.AllTowers.First();
+        Tower nearest = Tower.AllTowers.FirstOrDefault(s => s != null);
 
         if (nearest != null)
         {
