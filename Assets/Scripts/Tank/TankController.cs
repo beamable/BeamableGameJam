@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -43,7 +44,9 @@ public class TankController : InteractiveEntity
     [SerializeField] private float trackSpawnDelay;
     [SerializeField] private Transform tracksParent;
 
-    Vector3 target = Vector3.zero;
+    Vector3 movementTarget = Vector3.zero;
+    Vector3 enemyTarget = Vector3.zero;
+
     bool isWaiting = false;
     bool canShoot = false;
     float currentShootDelay = 0;
@@ -106,9 +109,9 @@ public class TankController : InteractiveEntity
             navMeshAgent.updatePosition = true;
         }
 
-        if (target != Vector3.zero)
+        if (movementTarget != Vector3.zero)
         {
-            navMeshAgent.SetDestination(target);
+            navMeshAgent.SetDestination(movementTarget);
 
             UpdateCannon();
             UpdateTracks();
@@ -118,29 +121,41 @@ public class TankController : InteractiveEntity
 
     void CalcNewTarget()
     {
-        // TO DO GET NEXT TARGET
-
-        Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * 10f;
-        randomDirection += transform.position;
-        NavMeshHit hit;
-        Vector3 finalPosition = Vector3.zero;
-        if (NavMesh.SamplePosition(randomDirection, out hit, 10f, 1))
+        if (Tower.AllTowers.Count > 0)
         {
-            finalPosition = hit.position;
+            Tower.AllTowers.First();
+
         }
-        target = finalPosition;
+
+        Tower nearest = Tower.AllTowers.First();
+
+        if (nearest != null)
+        {
+            Vector3 randomNearestPos = nearest.transform.position + UnityEngine.Random.insideUnitSphere * 1f;
+            NavMeshHit hit;
+            Vector3 finalPosition = Vector3.zero;
+
+            if (NavMesh.SamplePosition(randomNearestPos, out hit, 10f, 1))
+            {
+                finalPosition = hit.position;
+            }
+
+            movementTarget = finalPosition;
+            enemyTarget = nearest.transform.position;
+        }
+     
     }
 
     void UpdateCannon()
     {
-        Vector3 delta = target - cannonPivot.transform.position;
+        Vector3 delta = enemyTarget - cannonPivot.transform.position;
         var lookRotation = Quaternion.LookRotation(delta);
 
         cannonPivot.transform.rotation = Quaternion.RotateTowards(cannonPivot.transform.rotation, lookRotation, 
             cachedCannonRotSpeed * Time.deltaTime);
 
         float dot = Quaternion.Dot(cannonPivot.transform.rotation, lookRotation);
-        float dist = Vector3.Distance(target, cannonPivot.transform.position);
+        float dist = Vector3.Distance(enemyTarget, cannonPivot.transform.position);
         if (Mathf.Approximately(dot, 1) && currentShootDelay <= 0 && dist <= cannonRange)
             canShoot = true;
         else
@@ -260,7 +275,7 @@ public class TankController : InteractiveEntity
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawSphere(target, 0.1f);
+        Gizmos.DrawSphere(movementTarget, 0.1f);
     }
 
 #endif
