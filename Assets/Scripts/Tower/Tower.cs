@@ -19,6 +19,7 @@ public class Tower : InteractiveEntity
     [SerializeField] private GameObject missilePrefab;
     [SerializeField] private GameObject fireEffectPrefab;
     [SerializeField] private GameObject explosionPrefab;
+    [SerializeField] private AudioClip shotSfx;
     
     [Header("Properties")]
     [SerializeField] private float rotationSpeed = 45;
@@ -41,6 +42,7 @@ public class Tower : InteractiveEntity
         Assert.IsNotNull(missilePrefab);
         Assert.IsNotNull(fireEffectPrefab);
         Assert.IsNotNull(explosionPrefab);
+        Assert.IsNotNull(shotSfx);
     }
 
     private IEnumerator SortTowersAfterInit()
@@ -84,6 +86,7 @@ public class Tower : InteractiveEntity
             missileSpawnPoint);
         Destroy(fireEffect, FireEffectFadeDelay);
         _cooldownTimer = fireCooldown;
+        AudioManager.Instance.PlayClip(shotSfx, transform.position);
     }
 
     protected override void Destruct()

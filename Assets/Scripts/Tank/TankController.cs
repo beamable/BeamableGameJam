@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public class TankController : InteractiveEntity
 {
@@ -44,6 +45,11 @@ public class TankController : InteractiveEntity
     [SerializeField] private float trackSpawnDelay;
     [SerializeField] private Transform tracksParent;
 
+    [Header("Sounds")]
+    [SerializeField] private AudioClip shotSfx;
+    [SerializeField] private AudioClip explosionSfx;
+    [SerializeField] private AudioClip engineSfx;
+
     Vector3 movementTarget = Vector3.zero;
     Vector3 enemyTarget = Vector3.zero;
 
@@ -62,6 +68,8 @@ public class TankController : InteractiveEntity
 
     List<GameObject> bulletsPool;
     List<GameObject> trackPool;
+
+    AudioSource engineAudioSource;
 
     protected override void Awake()
     {
@@ -94,6 +102,8 @@ public class TankController : InteractiveEntity
         pivot.eulerAngles = new Vector3(90, 0, 0);
         
         OnAmmoUpdated?.Invoke(AmmoLeft);
+        
+        engineAudioSource = AudioManager.Instance.PlayLoop(engineSfx, transform);
     }
 
     void Update()
@@ -110,6 +120,11 @@ public class TankController : InteractiveEntity
             }
 
             navMeshAgent.updatePosition = true;
+        }
+
+        if (engineSfx != null)
+        {
+            UpdateEngineSound();
         }
 
         if (movementTarget != Vector3.zero)
@@ -184,10 +199,27 @@ public class TankController : InteractiveEntity
         }
     }
 
+    void UpdateEngineSound()
+    {
+        if (navMeshAgent.velocity.magnitude > 0)
+        {
+            if (engineAudioSource.pitch < 1.05f)
+            {
+                engineAudioSource.pitch = Random.Range(1.05f, 1.2f);
+            }
+        }
+        else
+        {
+            engineAudioSource.pitch = 1f;
+        }
+    }
+
     void ShootIfPossible()
     {
         if (canShoot && usedBullets < cannonBulletsAmount)
         {
+            AudioManager.Instance.PlayClip(shotSfx, transform.position);
+            
             currentShootDelay = canonDelayShootTime;
 
             GameObject missile = Instantiate(missilePrefab, bulletPivot.position, bulletPivot.rotation, null);
@@ -270,7 +302,7 @@ public class TankController : InteractiveEntity
 
     protected override void Destruct()
     {
-        base.Destruct();
+        AudioManager.Instance.PlayClip(explosionSfx, transform.position, .5f);
         Destroy(gameObject);
         var explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity, null);
         Destroy(explosion, 1);

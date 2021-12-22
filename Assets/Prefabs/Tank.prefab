@@ -347,6 +347,9 @@ MonoBehaviour:
   tracksPoolSize: 30
   trackSpawnDelay: 0.2
   tracksParent: {fileID: 0}
+  shotSfx: {fileID: 8300000, guid: 06798dccc699c6f4b8758698531311ff, type: 3}
+  explosionSfx: {fileID: 8300000, guid: fa6febb95bff3a944a99141f1296dbbd, type: 3}
+  engineSfx: {fileID: 8300000, guid: b9a07e8cc36329043866bb5133c38c47, type: 3}
 --- !u!195 &1702914833038212065
 NavMeshAgent:
   m_ObjectHideFlags: 0
