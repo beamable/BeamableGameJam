@@ -9,8 +9,7 @@ using Vector3 = UnityEngine.Vector3;
 public class Tower : InteractiveEntity
 {
     public static List<Tower> AllTowers { get; } = new List<Tower>();
-
-    public event Action onTowerDestroyed;
+    public static event Action OnTowerDestroyed;
     
     private const float FireEffectFadeDelay = .3f;
     
@@ -89,7 +88,7 @@ public class Tower : InteractiveEntity
 
     protected override void Destruct()
     {
-        onTowerDestroyed?.Invoke();
+        OnTowerDestroyed?.Invoke();
         Destroy(barrelTransform.gameObject);
         AllTowers.Remove(this);
         var explosion = Instantiate(explosionPrefab, barrelTransform.position, Quaternion.identity, null);

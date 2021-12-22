@@ -25,6 +25,7 @@ public class GameplayManager : MonoBehaviour
     private bool _isRunning;
     private float _missionTime;
     private bool _retreated;
+    private int _destroyedTowers;
 
     private void Start()
     {
@@ -43,12 +44,20 @@ public class GameplayManager : MonoBehaviour
         SetTimer(0);
 
         _nameField.onValueChanged.AddListener(OnNameChanged);
+
+        Tower.OnTowerDestroyed += OnTowerDestroyed;
+    }
+
+    private void OnTowerDestroyed()
+    {
+        _destroyedTowers++;
     }
 
     private void OnDestroy()
     {
         _tankController.OnAmmoUpdated = null;
         _nameField.onValueChanged.RemoveListener(OnNameChanged);
+        Tower.OnTowerDestroyed -= OnTowerDestroyed;
     }
 
     private void OnNameChanged(string value)
@@ -95,7 +104,10 @@ public class GameplayManager : MonoBehaviour
 
             Dictionary<string, object> stats = new Dictionary<string, object>();
             stats.Add(_aliasStatObject.StatKey, _nameField.text);
-            await api.LeaderboardService.SetScore(_leaderboardRef, 1, stats);
+
+            int score = (int)(_destroyedTowers * 10 / _missionTime * 100);
+
+            await api.LeaderboardService.SetScore(_leaderboardRef, score, stats);
         }
 
         SceneManager.LoadScene("MainMenuScene");
