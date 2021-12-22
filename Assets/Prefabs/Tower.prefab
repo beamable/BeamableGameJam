@@ -59,6 +59,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetTower: {fileID: 3492563234326121529}
+--- !u!1 &3424447226865839962
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3650604676301180133}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3650604676301180133
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3424447226865839962}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3492563234916141490}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3492563233778170010
 GameObject:
   m_ObjectHideFlags: 0
@@ -119,7 +149,7 @@ Transform:
   m_Children:
   - {fileID: 3492563233778170011}
   m_Father: {fileID: 3492563234916141490}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!212 &3492563234239760297
 SpriteRenderer:
@@ -217,6 +247,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startHitPoints: 100
+  WorldHintBar: {fileID: 1702517260072900109, guid: 982d9b8d9c26a9a4cb69f8c8e91f79e3, type: 3}
+  UIHintBar: {fileID: 0}
   barrelTransform: {fileID: 3492563234916141490}
   missileSpawnPoint: {fileID: 3492563233778170011}
   missilePrefab: {fileID: 4106103046522464125, guid: 3f1611f69c3b21b44a4189e646815387, type: 3}
@@ -349,6 +381,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 3650604676301180133}
   - {fileID: 3492563234239760296}
   m_Father: {fileID: 3492563234746196666}
   m_RootOrder: 2

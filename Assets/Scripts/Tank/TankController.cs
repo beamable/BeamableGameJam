@@ -270,6 +270,7 @@ public class TankController : InteractiveEntity
 
     protected override void Destruct()
     {
+        base.Destruct();
         Destroy(gameObject);
         var explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity, null);
         Destroy(explosion, 1);

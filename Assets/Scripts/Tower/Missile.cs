@@ -10,6 +10,7 @@ public class Missile : MonoBehaviour
     [SerializeField] private float explosionTimer = 5;
     [SerializeField] private float movementSpeed = 5;
     [SerializeField] private float damage = 15;
+    [SerializeField] private AudioClip explosionSfx;
 
     private void Awake()
     {
@@ -42,6 +43,7 @@ public class Missile : MonoBehaviour
 
     private void Explode()
     {
+        AudioManager.Instance.PlayClip(explosionSfx, transform.position);
         var explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity, null);
         Destroy(explosion, 1);
         Destroy(gameObject);
