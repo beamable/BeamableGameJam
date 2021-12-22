@@ -90,7 +90,7 @@ public class Tower : InteractiveEntity
         AllTowers.Remove(this);
         var explosion = Instantiate(explosionPrefab, barrelTransform.position, Quaternion.identity, null);
         Destroy(explosion, 1);
-        enabled = false;
+        Destroy(gameObject);
     }
 
     public void TargetAcquired(Transform target)
