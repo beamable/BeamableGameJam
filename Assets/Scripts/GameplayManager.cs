@@ -40,6 +40,7 @@ public class GameplayManager : MonoBehaviour
         _commandsManager.RegisterActionForCommand("SOS", _tankController.Heal);
 
         _tankController.OnAmmoUpdated = OnAmmoUpdated;
+        _tankController.OnDefeat = OnDefeat;
         
         _summaryText.gameObject.SetActive(false);
         _summaryTimer.gameObject.SetActive(false);
@@ -53,6 +54,12 @@ public class GameplayManager : MonoBehaviour
         Tower.OnTowerDestroyed += OnTowerDestroyed;
     }
 
+    private void OnDefeat()
+    {
+        _retreated = false;
+        StopMission();
+    }
+
     private void OnTowerDestroyed()
     {
         _destroyedTowers++;
@@ -61,6 +68,7 @@ public class GameplayManager : MonoBehaviour
     private void OnDestroy()
     {
         _tankController.OnAmmoUpdated = null;
+        _tankController.OnDefeat = null;
         _nameField.onValueChanged.RemoveListener(OnNameChanged);
         Tower.OnTowerDestroyed -= OnTowerDestroyed;
     }

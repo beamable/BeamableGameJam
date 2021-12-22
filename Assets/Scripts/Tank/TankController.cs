@@ -9,6 +9,7 @@ public class TankController : InteractiveEntity
 {
     public static TankController Instance { get; private set; }
     public Action<float> OnAmmoUpdated;
+    public Action OnDefeat;
     
     [Header("Basic")]
     [SerializeField] private NavMeshAgent navMeshAgent;
@@ -301,6 +302,7 @@ public class TankController : InteractiveEntity
 
     protected override void Destruct()
     {
+        OnDefeat?.Invoke();
         AudioManager.Instance.PlayClip(explosionSfx, transform.position, .5f);
         Destroy(gameObject);
         var explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity, null);
