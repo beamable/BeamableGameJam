@@ -1,6 +1,8 @@
 ﻿using System;
 using Beamable;
+using Beamable.Api;
 using Beamable.Common.Api.Auth;
+using Beamable.Service;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -25,6 +27,11 @@ public class LoginManager : MonoBehaviour
         {
             OnStatusChanged?.Invoke("Registering...");
             await _api.AuthService.RegisterDeviceId().Then(OnDeviceRegistered);
+        }
+        else
+        {
+            var platform = ServiceManager.Resolve<PlatformService>();
+            platform.ClearToken();
         }
 
         OnStatusChanged?.Invoke("Logging in...");
