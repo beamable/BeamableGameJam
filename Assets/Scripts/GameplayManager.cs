@@ -32,7 +32,12 @@ public class GameplayManager : MonoBehaviour
         _commandsManager.RegisterActionForCommand("A", _tankController.Attack);
         _commandsManager.RegisterActionForCommand("L", _tankController.Reload);
         _commandsManager.RegisterActionForCommand("P", _tankController.Boost);
-        _commandsManager.RegisterActionForCommand("SOS", ()=>{ });
+        _commandsManager.RegisterActionForCommand("S", _tankController.Heal);
+        
+        _commandsManager.RegisterActionForCommand("ATTACK", _tankController.Attack);
+        _commandsManager.RegisterActionForCommand("LOAD", _tankController.Reload);
+        _commandsManager.RegisterActionForCommand("PUSH", _tankController.Boost);
+        _commandsManager.RegisterActionForCommand("SOS", _tankController.Heal);
 
         _tankController.OnAmmoUpdated = OnAmmoUpdated;
         

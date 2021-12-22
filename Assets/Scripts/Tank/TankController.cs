@@ -297,7 +297,6 @@ public class TankController : InteractiveEntity
 
         bulletsPool.Clear();
         trackPool.Clear();
-
     }
 
     protected override void Destruct()
@@ -320,4 +319,9 @@ public class TankController : InteractiveEntity
     }
 
 #endif
+    public void Heal()
+    {
+        HitPoints = startHitPoints;
+        Refresh();
+    }
 }
