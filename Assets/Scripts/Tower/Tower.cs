@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,8 @@ using Vector3 = UnityEngine.Vector3;
 public class Tower : InteractiveEntity
 {
     public static List<Tower> AllTowers { get; } = new List<Tower>();
+
+    public event Action onTowerDestroyed;
     
     private const float FireEffectFadeDelay = .3f;
     
@@ -86,6 +89,7 @@ public class Tower : InteractiveEntity
 
     protected override void Destruct()
     {
+        onTowerDestroyed?.Invoke();
         Destroy(barrelTransform.gameObject);
         AllTowers.Remove(this);
         var explosion = Instantiate(explosionPrefab, barrelTransform.position, Quaternion.identity, null);
