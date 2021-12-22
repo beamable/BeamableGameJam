@@ -86,10 +86,17 @@ public class Tower : InteractiveEntity
 
     protected override void Destruct()
     {
-        Destroy(barrelTransform.gameObject);
+        if (barrelTransform != null)
+            Destroy(barrelTransform.gameObject);
+
         AllTowers.Remove(this);
-        var explosion = Instantiate(explosionPrefab, barrelTransform.position, Quaternion.identity, null);
-        Destroy(explosion, 1);
+
+        if (barrelTransform != null)
+        {
+            var explosion = Instantiate(explosionPrefab, barrelTransform.position, Quaternion.identity, null);
+            Destroy(explosion, 1);
+        }
+
         enabled = false;
     }
 
