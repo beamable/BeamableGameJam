@@ -76,11 +76,9 @@ public class GameplayManager : MonoBehaviour
         _missionTime += Time.deltaTime;
         SetTimer(_missionTime);
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            _retreated = false;
-            StopMission();
-        }
+        if (_destroyedTowers != 3) return;
+        _retreated = false;
+        StopMission();
     }
 
     public void StartMission()
@@ -125,7 +123,7 @@ public class GameplayManager : MonoBehaviour
         _summaryText.gameObject.SetActive(true);
         _summaryTimer.gameObject.SetActive(true);
         _continueButton.gameObject.SetActive(true);
-        _continueButton.interactable = false;
+        _continueButton.interactable = _retreated;
         _nameField.gameObject.SetActive(!_retreated);
         
         _summaryTimer.text = $"YOUR TIME: {_missionTime:F1} S";        
