@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public class TankController : InteractiveEntity
 {
@@ -44,9 +45,10 @@ public class TankController : InteractiveEntity
     [SerializeField] private float trackSpawnDelay;
     [SerializeField] private Transform tracksParent;
 
-    [Space]
+    [Header("Sounds")]
     [SerializeField] private AudioClip shotSfx;
     [SerializeField] private AudioClip explosionSfx;
+    [SerializeField] private AudioClip engineSfx;
 
     Vector3 movementTarget = Vector3.zero;
     Vector3 enemyTarget = Vector3.zero;
@@ -66,6 +68,8 @@ public class TankController : InteractiveEntity
 
     List<GameObject> bulletsPool;
     List<GameObject> trackPool;
+
+    AudioSource engineAudioSource;
 
     protected override void Awake()
     {
@@ -98,6 +102,8 @@ public class TankController : InteractiveEntity
         pivot.eulerAngles = new Vector3(90, 0, 0);
         
         OnAmmoUpdated?.Invoke(AmmoLeft);
+        
+        engineAudioSource = AudioManager.Instance.PlayLoop(engineSfx, transform);
     }
 
     void Update()
@@ -114,6 +120,11 @@ public class TankController : InteractiveEntity
             }
 
             navMeshAgent.updatePosition = true;
+        }
+
+        if (engineSfx != null)
+        {
+            UpdateEngineSound();
         }
 
         if (movementTarget != Vector3.zero)
@@ -185,6 +196,21 @@ public class TankController : InteractiveEntity
             navMeshAgent.speed = cachedSpeed;
             navMeshAgent.angularSpeed = cachedAngularSpeed;
             cachedCannonRotSpeed = cannonRotateSpeed;
+        }
+    }
+
+    void UpdateEngineSound()
+    {
+        if (navMeshAgent.velocity.magnitude > 0)
+        {
+            if (engineAudioSource.pitch < 1.05f)
+            {
+                engineAudioSource.pitch = Random.Range(1.05f, 1.2f);
+            }
+        }
+        else
+        {
+            engineAudioSource.pitch = 1f;
         }
     }
 
