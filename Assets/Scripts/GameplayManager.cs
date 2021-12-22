@@ -24,6 +24,7 @@ public class GameplayManager : MonoBehaviour
         _commandsManager.RegisterActionForCommand("A", _tankController.Attack);
         _commandsManager.RegisterActionForCommand("L", _tankController.Reload);
         _commandsManager.RegisterActionForCommand("P", _tankController.Boost);
+        _commandsManager.RegisterActionForCommand("SOS", ()=>{ });
 
         _tankController.OnAmmoUpdated = OnAmmoUpdated;
         

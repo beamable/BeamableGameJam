@@ -6,6 +6,7 @@ public class CommandsManager : MonoBehaviour
 {
 #pragma warning disable CS0649
     [SerializeField] private MorseDecoder _morseDecoder;
+    [SerializeField] private CrewSounds _crewSounds;
 #pragma warning restore CS0649
 
     private readonly Dictionary<string, Action> _registeredActions = new Dictionary<string, Action>();
@@ -17,10 +18,11 @@ public class CommandsManager : MonoBehaviour
         if (_registeredActions.TryGetValue(currentCommand, out Action currentAction))
         {
             currentAction?.Invoke();
+            _crewSounds.PlaySound(currentCommand);
         }
         else
         {
-            Debug.Log($"Command {currentCommand} has no action registered");
+            _crewSounds.PlaySound("N");
         }
 
         _morseDecoder.Reset();
