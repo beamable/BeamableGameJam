@@ -4,6 +4,8 @@ using UnityEngine.Assertions;
 
 public class Missile : MonoBehaviour
 {
+    public new Collider collider;
+    
     [SerializeField] private GameObject explosionPrefab;
     [SerializeField] private float explosionTimer = 5;
     [SerializeField] private float movementSpeed = 5;

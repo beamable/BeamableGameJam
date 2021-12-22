@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class TankController : MonoBehaviour
+public class TankController : InteractiveEntity
 {
     public static TankController Instance { get; private set; }
     
@@ -23,6 +23,7 @@ public class TankController : MonoBehaviour
     [SerializeField] private GameObject missilePrefab;
     [SerializeField] private GameObject fireEffectPrefab;
     [SerializeField] private GameObject trackPrefab;
+    [SerializeField] private GameObject explosionPrefab;
 
     [Header("Parameters")]
     [SerializeField] private float cannonRotateSpeed;
@@ -56,7 +57,7 @@ public class TankController : MonoBehaviour
     List<GameObject> bulletsPool;
     List<GameObject> trackPool;
 
-    private void Awake()
+    protected override void Awake()
     {
         if (Instance != null)
         {
@@ -65,6 +66,7 @@ public class TankController : MonoBehaviour
         else
         {
             Instance = this;
+            base.Awake();
         }
     }
 
@@ -236,6 +238,13 @@ public class TankController : MonoBehaviour
         bulletsPool.Clear();
         trackPool.Clear();
 
+    }
+
+    protected override void Destruct()
+    {
+        Destroy(gameObject);
+        var explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity, null);
+        Destroy(explosion, 1);
     }
 
 #if UNITY_EDITOR

@@ -49,22 +49,6 @@ public class Tower : InteractiveEntity
 
     private float DistanceToTank() => Vector3.Distance(TankController.Instance.transform.position, transform.position);
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag(TagsHelper.TankTag))
-        {
-            _target = other.transform;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (_target && other.CompareTag(TagsHelper.TankTag))
-        {
-            _target = null;
-        }
-    }
-
     private void Update()
     {
         if (_target)
