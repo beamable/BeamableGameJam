@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -5,6 +6,7 @@ using UnityEngine.AI;
 public class TankController : InteractiveEntity
 {
     public static TankController Instance { get; private set; }
+    public Action<float> OnAmmoUpdated;
     
     [Header("Basic")]
     [SerializeField] private NavMeshAgent navMeshAgent;
@@ -70,6 +72,8 @@ public class TankController : InteractiveEntity
         }
     }
 
+    private int AmmoLeft => (int) (cannonBulletsAmount - usedBullets);
+
     void Start()
     {
         bulletsPool = new List<GameObject>();
@@ -82,6 +86,8 @@ public class TankController : InteractiveEntity
         cachedAngularSpeed = navMeshAgent.angularSpeed;
 
         pivot.eulerAngles = new Vector3(90, 0, 0);
+        
+        OnAmmoUpdated?.Invoke(AmmoLeft);
     }
 
     void Update()
@@ -169,9 +175,10 @@ public class TankController : InteractiveEntity
                 bulletPivot);
             Destroy(fireEffect, .3f);
 
-             Physics.IgnoreCollision(mainCollider, missile.GetComponent<Missile>().collider);
+            Physics.IgnoreCollision(mainCollider, missile.GetComponent<Missile>().collider);
 
             usedBullets++;
+            OnAmmoUpdated?.Invoke(AmmoLeft);
         }
     }
 
@@ -200,6 +207,7 @@ public class TankController : InteractiveEntity
     public void Reload()
     {
         usedBullets = 0;
+        OnAmmoUpdated?.Invoke(AmmoLeft);
     }
 
     public void Attack()
