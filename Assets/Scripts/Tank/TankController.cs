@@ -103,7 +103,7 @@ public class TankController : InteractiveEntity
         
         OnAmmoUpdated?.Invoke(AmmoLeft);
         
-        engineAudioSource = AudioManager.Instance.PlayLoop(engineSfx, transform);
+        engineAudioSource = AudioManager.Instance.PlayLoop(engineSfx, transform, .5f);
     }
 
     void Update()
