@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Quaternion = UnityEngine.Quaternion;
@@ -5,6 +6,8 @@ using Vector3 = UnityEngine.Vector3;
 
 public class Tower : MonoBehaviour
 {
+    public static List<Tower> AllTowers { get; } = new List<Tower>();
+    
     private const float FireEffectFadeDelay = .3f;
     
     [SerializeField] private Transform barrelTransform;
@@ -20,6 +23,8 @@ public class Tower : MonoBehaviour
 
     private void Awake()
     {
+        AllTowers.Add(this);
+        
         _collider = GetComponent<CapsuleCollider>();
         Assert.IsNotNull(barrelTransform);
         Assert.IsNotNull(missileSpawnPoint);
