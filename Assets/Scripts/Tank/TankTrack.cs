@@ -5,7 +5,7 @@ using UnityEngine;
 public class TankTrack : MonoBehaviour
 {
     [SerializeField]
-    SpriteRenderer renderer;
+    SpriteRenderer spriteRenderer;
 
     Coroutine updateCoroutine;
 
@@ -26,7 +26,7 @@ public class TankTrack : MonoBehaviour
     {
         while (true)
         {
-            renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, Mathf.Clamp(renderer.color.a - .01f, 0, 1));
+            spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, Mathf.Clamp(spriteRenderer.color.a - .01f, 0, 1));
             yield return new WaitForSeconds(.05f);
         }
     }

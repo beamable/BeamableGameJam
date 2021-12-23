@@ -54,7 +54,6 @@ public class TankController : InteractiveEntity
     Vector3 movementTarget = Vector3.zero;
     Vector3 enemyTarget = Vector3.zero;
 
-    bool isWaiting = false;
     bool canShoot = false;
     float currentShootDelay = 0;
     float currentTrackTime = 0;
