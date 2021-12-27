@@ -35,7 +35,9 @@ public class LoginManager : MonoBehaviour
         }
 
         OnStatusChanged?.Invoke("Logging in...");
-        await _api.AuthService.LoginDeviceId().Then(OnDeviceLogin);
+        var tokenResponse = await _api.AuthService.LoginDeviceId();
+        await _api.ApplyToken(tokenResponse);
+        OnDeviceLogin(tokenResponse);
         
         OnStatusChanged?.Invoke("Downloading content...");
         await _api.ContentService.GetContent(_commandsConfig).Then(OnCommandsConfigReceived);
